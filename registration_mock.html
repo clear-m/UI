@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- <script type="text/javascript" src="/wai/wai.js"></script> -->
+    <!-- <link href="/wai/default.css" rel="stylesheet" type="text/css"> -->
+    <link href="/index.css" rel="stylesheet" type="text/css">
+    <style>
+        .registration-form {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input:not([type="checkbox"]) {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: 2px solid #4CAF50;
+            border-color: transparent;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .terms {
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="logo_parent">
+        <img class="logo_child" src="https://i.vimeocdn.com/portrait/58832_300x300" />
+    </div>
+    <form class="registration-form" onsubmit="return validateForm()">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required placeholder="admin" pattern="[A-Za-z0-9_]+"
+                minlength="4" title="Letters, numbers, and underscores only (min 4 characters)">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required minlength="8" placeholder="••••••••"
+                    pattern="^(?=.*[A-Za-z])(?=.*\d).{8,}$" title="At least 8 characters with letters and numbers">
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required placeholder="••••••••">
+                <div id="password-error" class="error-message"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="show-password"> Show passwords
+            </label>
+        </div>
+
+        <button type="submit">Create Device Account</button>
+    </form>
+
+    <script>
+        function validateForm() {
+            // Password matching validation
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const passwordError = document.getElementById('password-error');
+
+            if (password !== confirmPassword) {
+                passwordError.textContent = "Passwords do not match!";
+                return false;
+            }
+            passwordError.textContent = "";
+
+            // Username availability check (simulated)
+            const username = document.getElementById('username').value;
+            if (username.toLowerCase() === 'admin') {
+                showError('Username "admin" is not allowed');
+                return false;
+            }
+
+            // Age validation
+            const birthdate = new Date(document.getElementById('birthdate').value);
+            const minAgeDate = new Date();
+            minAgeDate.setFullYear(minAgeDate.getFullYear() - 13);
+            if (birthdate > minAgeDate) {
+                showError('You must be at least 13 years old to register');
+                return false;
+            }
+
+            // If all validations pass
+            alert('Registration successful! (This is a demo)');
+            return true;
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            document.querySelector('form').prepend(errorDiv);
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+
+        // Toggle password visibility
+        document.getElementById('show-password').addEventListener('change', function (e) {
+            const passwordFields = document.querySelectorAll('input[type="password"]');
+            passwordFields.forEach(field => {
+                field.type = e.target.checked ? 'text' : 'password';
+            });
+        });
+    </script>
+</body>
+</html>
