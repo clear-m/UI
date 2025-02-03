@@ -133,7 +133,7 @@
     </div>
  
     <script>
-        // remove all first
+        // Remove all first
         deleteAll();
         // Initialize links array from localStorage or empty array
         var links = JSON.parse(localStorage.getItem('links')) || [];
@@ -159,6 +159,11 @@
                 title: "forgot password",
                 url: "./change_password_mock.html"
             },
+            {
+                unit: "status",
+                title: "board status",
+                url: "./status_mock.html"
+            }
         ]);
  
         // DOM Elements
