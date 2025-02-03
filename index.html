@@ -133,6 +133,8 @@
     </div>
  
     <script>
+        // remove all first
+        deleteAll();
         // Initialize links array from localStorage or empty array
         var links = JSON.parse(localStorage.getItem('links')) || [];
         links = links.concat(
@@ -191,6 +193,11 @@
             renderLinks();
             linkForm.reset();
         });
+
+        // Delete all
+        function deleteAll() {
+            localStorage.removeItem('links');
+        }
  
         // Delete link
         function deleteLink(id) {
