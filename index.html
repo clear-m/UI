@@ -1,23 +1,228 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Dashboard</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background: #f5f6fa;
+        }
+ 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background);
+        }
+ 
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+ 
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+ 
+        .search-box {
+            padding: 10px;
+            width: 300px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+        }
+ 
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+ 
+        .link-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+ 
+        .link-card:hover {
+            transform: translateY(-3px);
+        }
+ 
+        .link-title {
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+        }
+ 
+        .link-url {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            word-break: break-all;
+        }
+ 
+        .link-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+ 
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+ 
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+ 
+        .add-link-form {
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+ 
+        .form-group {
+            margin-bottom: 15px;
+        }
+ 
+        .form-input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
 </head>
-
 <body>
-    <p>
-        <a href="./registration_mock.html">registration mock</a>
-    </p>
-    <p>
-        <a href="./login_mock.html">login mock</a>
-    </p>
-    <p>
-        <a href="./change_password_mock.html">change password mock</a>
-    </p>
-    <p>
-        <a href="./forgot_password.html">forgot passwrd</a>
-    </p>
-</body>
+    <div class="container">
+        <div class="header">
+            <h1>Dev Dashboard</h1>
+            <input type="text" class="search-box" placeholder="Search links..." id="searchInput">
+        </div>
+ 
+        <div class="add-link-form" style="display: none">
+            <h2>Add New Link</h2>
+            <form id="linkForm">
+                <div class="form-group">
+                    <label>Title:</label>
+                    <input type="text" class="form-input" id="linkTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>URL:</label>
+                    <input type="url" class="form-input" id="linkUrl" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Link</button>
+            </form>
+        </div>
+ 
+        <div class="links-grid" id="linksContainer"></div>
+    </div>
+ 
+    <script>
+        // Initialize links array from localStorage or empty array
+        var links = JSON.parse(localStorage.getItem('links')) || [];
+        links = links.concat(
+        [
+            {
+                unit: "login",
+                title: "login part",
+                url: "./login_mock.html"
+            },
+            {
+                unit: "login",
+                title: "registration",
+                url: "./registration_mock.html"
+            },
+            {
+                unit: "login",
+                title: "registration",
+                url: "./registration_mock.html"
+            },
+            {
+                unit: "login",
+                title: "forgot password",
+                url: "./forgot_password.html"
+            },
+            {
+                unit: "login",
+                title: "forgot password",
+                url: "./change_password.html"
+            },
+        ]);
+ 
+        // DOM Elements
+        const linksContainer = document.getElementById('linksContainer');
+        const searchInput = document.getElementById('searchInput');
+        const linkForm = document.getElementById('linkForm');
+ 
+        // Render links
+        function renderLinks(filteredLinks = links) {
+            linksContainer.innerHTML = filteredLinks.map(link => `
+                <div class="link-card">
+                    <h3 class="link-title">${['(', link.unit, ') ', link.title].join('')}</h3>
+                    <p class="link-url">${link.url}</p>
+                    <div class="link-actions">
+                        <a href="${link.url}" target="_blank" class="btn btn-primary">Visit</a>
+                        <button class="btn" onclick="deleteLink('${link.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+ 
+        // Add new link
+        linkForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newLink = {
+                id: Date.now().toString(),
+                title: document.getElementById('linkTitle').value,
+                url: document.getElementById('linkUrl').value
+            };
+            links.push(newLink);
+            saveToLocalStorage();
+            renderLinks();
+            linkForm.reset();
+        });
+ 
+        // Delete link
+        function deleteLink(id) {
+            links = links.filter(link => link.id !== id);
+            saveToLocalStorage();
+            renderLinks();
+        }
+ 
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredLinks = links.filter(link => 
+                link.title.toLowerCase().includes(searchTerm) ||
+                link.url.toLowerCase().includes(searchTerm) ||
+                link.unit.toLowerCase().includes(searchTerm)
+            );
+            renderLinks(filteredLinks);
+        });
+ 
+        // Save to localStorage
+        function saveToLocalStorage() {
 
+            localStorage.setItem('links', JSON.stringify(links));
+        }
+ 
+        // Initial render
+        renderLinks();
+    </script>
+</body>
 </html>
