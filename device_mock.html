@@ -8,38 +8,110 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
+        .device-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .operation-form {
+            background: #f8f9fa;
             padding: 20px;
-            background-color: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 25px;
+            background-color: #f3f6f9;
             min-height: 100vh;
         }
 
         .dashboard-container {
             display: flex;
-            gap: 20px;
-            max-width: 1400px;
+            gap: 25px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
         .device-panel {
             flex: 1;
             max-width: 400px;
-            background-color: white;
+            background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .right-panels {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
         }
 
         .chart-panel {
-            flex: 2;
-            background-color: white;
+            background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            height: fit-content;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            height: 500px;
+        }
+
+        .operations-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
         .device-header {
@@ -67,31 +139,66 @@
             gap: 15px;
         }
 
-        .dev-info-card {
+        .info-card {
             padding: 15px;
             background-color: #f8f9fa;
             border-radius: 8px;
             border-left: 4px solid #4CAF50;
-            box-sizing: initial;
         }
 
-        .dev-info-label {
+        .info-label {
             color: #666;
             font-size: 0.85em;
             margin-bottom: 8px;
-            /* box-sizing: unset; */
         }
 
-        .dev-dev-info-value {
+        .info-value {
             font-size: 1.1em;
             font-weight: 600;
             color: #2c3e50;
         }
 
-        #temperatureChart {
-            width: 100% !important;
-            height: auto !important;
-            max-height: 300px;
+        .operations-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .operations-table th {
+            background-color: #f8f9fa;
+            color: #666;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px;
+            font-size: 0.9em;
+            border-bottom: 2px solid #eee;
+        }
+
+        .operations-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9em;
+        }
+
+        .operations-table tr:hover {
+            background-color: #fafafa;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-failed {
+            background-color: #ffebee;
+            color: #c62828;
         }
 
         @media (max-width: 1200px) {
@@ -101,6 +208,10 @@
 
             .device-panel {
                 max-width: 100%;
+            }
+
+            .chart-panel {
+                height: auto;
             }
         }
 
@@ -120,83 +231,132 @@
 </head>
 
 <body>
-    <div class="container">
-        <!-- Tab Bar -->
-        <ul class="nav nav-tabs" id="statusTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"
-                    role="tab" aria-controls="overview" aria-selected="true">Administration</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="status-tab" data-bs-toggle="tab" data-bs-target="#status" type="button"
-                    role="tab" aria-controls="status" aria-selected="false">Status</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="devices-tab" data-bs-toggle="tab" data-bs-target="#devices"
-                    type="button" role="tab" aria-controls="devices" aria-selected="false">Devices</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="logout-tab" data-bs-toggle="tab" data-bs-target="#logout" type="button"
-                    role="tab" aria-controls="logout" aria-selected="false">Logout</button>
-            </li>
-        </ul>
-        <div class="dashboard-container">
-            <!-- Left Panel - Device Details -->
-            <div class="device-panel">
-                <div class="device-header">
-                    <h2>Device</h2>
-                </div>
-
-                <div class="device-info-grid">
-                    <div class="dev-info-card">
-                        <div class="dev-info-label">Device ID</div>
-                        <div class="dev-info-value">SE-2209-456</div>
-                    </div>
-                    <div class="dev-info-card">
-                        <div class="dev-info-label">Temperature</div>
-                        <div class="dev-info-value">24.1°C</div>
-                    </div>
-                    <div class="dev-info-card">
-                        <div class="dev-info-label">Humidity</div>
-                        <div class="dev-info-value">45% RH</div>
-                    </div>
-                    <div class="dev-info-card">
-                        <div class="dev-info-label">Location</div>
-                        <div class="dev-info-value">Lab 3B</div>
-                    </div>
-                    <div class="dev-info-card">
-                        <div class="dev-info-label">Last Update</div>
-                        <div class="dev-info-value">2023-08-15 09:45</div>
-                    </div>
-                    <div class="dev-info-card">
-                        <div class="dev-info-label">Battery</div>
-                        <div class="dev-info-value">78%</div>
-                    </div>
-                </div>
+    <!-- Tab Bar -->
+    <ul class="nav nav-tabs" id="statusTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"
+                role="tab" aria-controls="overview" aria-selected="true">Administration</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="status-tab" data-bs-toggle="tab" data-bs-target="#status" type="button"
+                role="tab" aria-controls="status" aria-selected="false">Status</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="devices-tab" data-bs-toggle="tab" data-bs-target="#devices"
+                type="button" role="tab" aria-controls="devices" aria-selected="false">Devices</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="logout-tab" data-bs-toggle="tab" data-bs-target="#logout" type="button"
+                role="tab" aria-controls="logout" aria-selected="false">Logout</button>
+        </li>
+    </ul>
+    <h2 class="my-4">Device</h2>
+    <div class="dashboard-container">
+        <!-- Left Panel - Device Details -->
+        <div class="device-panel">
+            <div class="device-header">
+                <h2>TEMP+HUMM</h2>
                 <div class="device-status status-online">Online</div>
             </div>
 
-            <!-- Right Panel - Chart -->
+            <!-- Device Image -->
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDjIYTfML0Lcj4BMHEz_xpJzNjqVj-uAhpg7e00cw-Adayq48Et4fIiJk&s"
+                alt="IoT Device" class="device-image">
+
+            <div class="device-info-grid">
+                <div class="info-card">
+                    <div class="info-label">Device ID</div>
+                    <div class="info-value">SE-2209-456</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Temperature</div>
+                    <div class="info-value">24.1°C</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Humidity</div>
+                    <div class="info-value">45% RH</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Location</div>
+                    <div class="info-value">Lab 3B</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Last Update</div>
+                    <div class="info-value">2024-08-15 09:45</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panels -->
+        <div class="right-panels">
+            <!-- Chart Panel -->
             <div class="chart-panel">
                 <canvas id="temperatureChart"></canvas>
-                <div class="device-panel">
-                    <div class="info-item">
-                        <div class="dev-info-label">Operations</div>
-                        <div class="dev-info-value">
-                            <div class="info-item">
-                                <div class="dev-info-label">Read</div>
-                                <div class="dev-info-value">Value</div>
+            </div>
+
+            <!-- Operations Table Panel -->
+            <div class="operations-panel">
+                <h3>Device Operations</h3>
+
+                <!-- Create Operation Form -->
+                <div class="operation-form">
+                    <form id="createOperationForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="operationType">Operation Type</label>
+                                <select class="form-control" id="operationType" required>
+                                    <option value="">Select</option>
+                                    <option value="read">Read</option>
+                                    <option value="write">Write</option>
+                                </select>
                             </div>
-                            <div class="info-item">
-                                <div class="dev-info-label">Write</div>
-                                <div class="dev-info-value">Value</div>
+                            <div class="form-group">
+                                <label for="operationValue">Value</label>
+                                <input type="text" class="form-control" id="operationValue" placeholder="Enter value"
+                                    required>
                             </div>
                         </div>
-                    </div>
+                        <button type="submit" class="btn btn-primary">Create Operation</button>
+                    </form>
+                </div>
+
+                <!-- Operations Table -->
+                <div style="overflow-x: auto;">
+                    <table class="operations-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Operation</th>
+                                <th>Value</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-08-15 09:40</td>
+                                <td>Write Temperature Setpoint</td>
+                                <td>24.0°C</td>
+                                <td><span class="status-badge status-success">Success</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-08-15 09:35</td>
+                                <td>Read Humidity</td>
+                                <td>45% RH</td>
+                                <td><span class="status-badge status-success">Success</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-08-15 09:25</td>
+                                <td>Read Temperature</td>
+                                <td>23.8°C</td>
+                                <td><span class="status-badge status-success">Success</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+
     <script>
         // Chart Configuration
         const ctx = document.getElementById('temperatureChart').getContext('2d');
@@ -230,7 +390,7 @@
                     },
                     title: {
                         display: true,
-                        text: 'Values Last 24 Hours',
+                        text: 'Temperature - Last 24 Hours',
                         font: {
                             size: 16
                         }
@@ -265,6 +425,38 @@
                 }
             }
         });
+
+        // Create Operation Functionality
+        document.getElementById('createOperationForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const type = document.getElementById('operationType').value;
+            const value = document.getElementById('operationValue').value;
+            const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+            // Create new table row
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${timestamp}</td>
+                <td>${type === 'read' ? 'Read' : 'Write'} ${getOperationTarget(type)}</td>
+                <td>${value}</td>
+                <td><span class="status-badge status-success">Pending</span></td>
+            `;
+
+            // Add to top of table
+            document.querySelector('.operations-table tbody').prepend(newRow);
+
+            // Clear form
+            this.reset();
+        });
+
+        function getOperationTarget(type) {
+            const targets = {
+                read: ['Temperature', 'Humidity', 'Pressure'],
+                write: ['Setpoint']
+            };
+            return targets[type][Math.floor(Math.random() * targets[type].length)];
+        }
     </script>
 </body>
 

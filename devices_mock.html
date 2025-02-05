@@ -34,10 +34,15 @@
         .data-grid th, .data-grid td, .data-grid thead th, .data-grid tbody td, .data-grid tfoot td, .data-grid tfoot th {
             width: auto !important;
         }
+
+        .all-devices {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
     </style>
 </head>
 
-<body>
+<body class="all-devices">
     <div class="container">
         <!-- Tab Bar -->
         <ul class="nav nav-tabs" id="statusTabs" role="tablist">
@@ -65,7 +70,6 @@
                     <th>Device Path</th>
                     <th>Name</th>
                     <th>Status</th>
-                    <th>Value</th>
                     <th>Sensor 1</th>
                     <th>Sensor 2</th>
                 </tr>
@@ -81,7 +85,6 @@
                 {
                     dev_path: "/dev/ttyUSB0",
                     dev_name: 'Other',
-                    value: 11,
                     status: 'Online',
                     chartData: {
                         type: 'line',
@@ -92,7 +95,6 @@
                 {
                     dev_path: "/dev/ttyUSB1",
                     dev_name: 'Term+Humm',
-                    value: 45,
                     status: 'Online',
                     chartData: {
                         type: 'line',
@@ -103,7 +105,6 @@
                 {
                     dev_path: "/dev/ttyUSB2",
                     dev_name: 'Term+Press',
-                    value: 72,
                     status: 'Online',
                     chartData: {
                         type: 'line',
@@ -114,7 +115,6 @@
                 {
                     dev_path: "/dev/ttyUSB3",
                     dev_name: 'Other',
-                    value: 33,
                     status: 'Online',
                     chartData: {
                         type: 'line',
@@ -125,7 +125,6 @@
                 {
                     dev_path: "/dev/ttyUSB4",
                     dev_name: 'Other',
-                    value: 33,
                     status: 'Online',
                     chartData: {
                         type: 'line',
@@ -136,7 +135,6 @@
                 {
                     dev_path: "/dev/ttyUSB5",
                     dev_name: 'Other',
-                    value: 44,
                     status: 'Online',
                     chartData: {
                         type: 'line',
@@ -147,7 +145,6 @@
                 {
                     dev_path: "/dev/ttyUSB6",
                     dev_name: 'Other',
-                    value: 55,
                     status: 'Online',
                     chartData: {
                         type: 'line',
@@ -158,7 +155,6 @@
                 {
                     dev_path: "/dev/ttyUSB7",
                     dev_name: 'Other',
-                    value: 66,
                     status: 'Online',
                     chartData: {
                         type: 'line',
@@ -179,7 +175,6 @@
                 <td>${item.dev_path}</td>
                 <td>${item.dev_name}</td>
                 <td>${item.status}</td>
-                <td>${item.value}</td>
                 <td><div class="chart-container"><canvas id="chart-${index}-1"></canvas></div></td>
                 <td><div class="chart-container"><canvas id="chart-${index}-2"></canvas></div></td>
             `;
