@@ -31,7 +31,12 @@
             height: 100px;
         }
 
-        .data-grid th, .data-grid td, .data-grid thead th, .data-grid tbody td, .data-grid tfoot td, .data-grid tfoot th {
+        .data-grid th,
+        .data-grid td,
+        .data-grid thead th,
+        .data-grid tbody td,
+        .data-grid tfoot td,
+        .data-grid tfoot th {
             width: auto !important;
         }
 
@@ -39,34 +44,48 @@
             background-color: #f8f9fa;
             padding: 20px;
         }
+
+        .left-tabs {
+            display: flex;
+            justify-content: left;
+        }
+
+        td.device-specs:hover {
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body class="all-devices">
     <div class="container">
-        <!-- Tab Bar -->
-        <ul class="nav nav-tabs" id="statusTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"
-                    role="tab" aria-controls="overview" aria-selected="true">Administration</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="status-tab" data-bs-toggle="tab" data-bs-target="#status" type="button"
-                    role="tab" aria-controls="status" aria-selected="false">Status</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="devices-tab" data-bs-toggle="tab" data-bs-target="#devices"
-                    type="button" role="tab" aria-controls="devices" aria-selected="false">Devices</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="logout-tab" data-bs-toggle="tab" data-bs-target="#logout" type="button"
-                    role="tab" aria-controls="logout" aria-selected="false">System</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="logout-tab" data-bs-toggle="tab" data-bs-target="#logout" type="button"
-                    role="tab" aria-controls="logout" aria-selected="false">Logout</button>
-            </li>
-        </ul>
+        <!-- Left Tab Bar -->
+        <div class="left-tabs">
+            <!-- Tab Bar -->
+            <ul class="nav nav-tabs" id="statusTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="administration-tab" data-bs-toggle="tab"
+                        data-bs-target="#administration" type="button" role="tab" aria-controls="administration"
+                        aria-selected="false">Administration</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="status-tab" data-bs-toggle="tab" data-bs-target="#status"
+                        type="button" role="tab" aria-controls="status" aria-selected="false">Status</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="devices-tab" data-bs-toggle="tab" data-bs-target="#devices"
+                        type="button" role="tab" aria-controls="devices" aria-selected="true">Devices</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="system-tab" data-bs-toggle="tab" data-bs-target="#system" type="button"
+                        role="tab" aria-controls="system" aria-selected="false">System</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="logout-tab" data-bs-toggle="tab" data-bs-target="#logout" type="button"
+                        role="tab" aria-controls="logout" aria-selected="false">Logout</button>
+                </li>
+            </ul>
+        </div>
         <h2 class="my-4">Devices</h2>
         <table class="data-grid">
             <thead>
@@ -84,6 +103,87 @@
         </table>
 
         <script>
+            // Add tab click handlers
+            document.addEventListener('DOMContentLoaded', () => {
+                const tabs = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        const targetTab = e.target.getAttribute('data-bs-target');
+                        handleTabClick(targetTab);
+                    });
+                });
+
+                // Initialize first tab
+                handleTabClick('#devices', true);
+            });
+
+            // Add tab click handlers
+            document.addEventListener('DOMContentLoaded', () => {
+                const tabs = document.querySelectorAll('.device-specs');
+
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        handleDevClick();
+                    });
+                });
+            });
+
+
+            function handleTabClick(targetTab, init) {
+                console.log(`Switched to tab: ${targetTab}`);
+
+                // Custom actions for each tab
+                switch (targetTab) {
+                    case '#administration':
+                        console.log('handling administration...');
+                        break;
+                    case '#status':
+                        console.log('handling status...');
+                        break;
+                    case '#system':
+                        console.log('handling detailed system info...');
+                        break;
+                    case '#devices':
+                        console.log('handling detailed system info...');
+                        break;
+                    case '#logout':
+                        console.log('handling logout...');
+                        break;
+                }
+
+                // Active visual feedback
+                const activeTab = document.querySelector(`[data-bs-target="${targetTab}"]`);
+                const tabs = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+                tabs.forEach(tab => tab.classList.remove('active'));
+                activeTab.classList.add('active');
+
+                // Routing )
+                if (!init) {
+                    switch (targetTab) {
+                        case '#administration':
+                            window.location = "./change_password_internal.html";
+                            break;
+                        case '#status':
+                            window.location = "./status_mock.html";
+                            break;
+                        case '#system':
+                            window.location = "./firmwares_mock.html";
+                            break;
+                        case '#devices':
+                            window.location = "./devices_mock.html";
+                            break;
+                        case '#logout':
+                            window.location = "./login_mock.html";
+                            break;
+                    }
+                }
+            }
+
+            function handleDevClick() {
+                window.location = "./device_mock.html";
+            }
+
             // Sample data
             const tableData = [
                 {
@@ -176,7 +276,7 @@
 
                 // Text cells
                 row.innerHTML = `
-                <td>${item.dev_path}</td>
+                <td class='device-specs'>${item.dev_path}</td>
                 <td>${item.dev_name}</td>
                 <td>${item.status}</td>
                 <td><div class="chart-container"><canvas id="chart-${index}-1"></canvas></div></td>
@@ -232,4 +332,5 @@
         </script>
     </div>
 </body>
+
 </html>

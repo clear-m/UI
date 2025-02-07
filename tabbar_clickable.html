@@ -54,13 +54,13 @@
             });
 
             // Initialize first tab
-            handleTabClick('#administration');
+            handleTabClick('#administration', true);
         });
 
-        function handleTabClick(targetTab) {
+        function handleTabClick(targetTab, init) {
             console.log(`Switched to tab: ${targetTab}`);
 
-            // custom actions for each tab
+            // Custom actions for each tab
             switch (targetTab) {
                 case '#administration':
                     console.log('handling administration...');
@@ -79,11 +79,32 @@
                     break;
             }
 
-            // active visual feedback
+            // Active visual feedback
             const activeTab = document.querySelector(`[data-bs-target="${targetTab}"]`);
             const tabs = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
             tabs.forEach(tab => tab.classList.remove('active'));
             activeTab.classList.add('active');
+
+            // Routing )
+            if (!init) {
+                switch (targetTab) {
+                    case '#administration':
+                        window.location = "./change_password_internal.html";
+                        break;
+                    case '#status':
+                        window.location = "./status_mock.html";
+                        break;
+                    case '#system':
+                        window.location = "./firmwares_mock.html";
+                        break;
+                    case '#devices':
+                        window.location = "./devices_mock.html";
+                        break;
+                    case '#logout':
+                        window.location = "./login_mock.html";
+                        break;
+                }
+            }
         }
         // TODO: add bootstrap specific
         // const tabTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tab"]'));

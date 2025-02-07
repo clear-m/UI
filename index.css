@@ -1,7 +1,6 @@
 /* logo */
 .logo_parent {
     display: flex;
-    height: 300px; /* Or whatever */
 }
 
 .logo_child {

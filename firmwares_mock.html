@@ -8,15 +8,15 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
+        /* body {
             font-family: Arial, sans-serif;
             margin: 20px;
             background-color: #f5f5f5;
-        }
+        } */
 
-        .container {
+        .sub-container {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 0 0;
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -30,10 +30,10 @@
             border-radius: 4px;
         }
 
-        h2 {
+        /* h2 {
             color: #333;
             margin-top: 0;
-        }
+        } */
 
         .button {
             padding: 8px 16px;
@@ -97,73 +97,164 @@
             background-color: #f2dede;
             color: #a94442;
         }
+        .card {
+            margin-bottom: 1rem;
+        }
+
+        .progress {
+            height: 20px;
+            margin-bottom: 0.5rem;
+        }
+
+        .system-status {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .refresh-button {
+            margin-bottom: 1rem;
+        }
+
+        .left-tabs {
+            display: flex;
+            justify-content: left;
+        }
     </style>
 </head>
 
-<body>
+<body class="system-status">
     <div class="container">
-        <!-- Tab Bar -->
-        <ul class="nav nav-tabs" id="statusTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"
-                    role="tab" aria-controls="overview" aria-selected="true">Administration</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="status-tab" data-bs-toggle="tab" data-bs-target="#status"
-                    type="button" role="tab" aria-controls="status" aria-selected="false">Status</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="devices-tab" data-bs-toggle="tab" data-bs-target="#devices" type="button"
-                    role="tab" aria-controls="devices" aria-selected="false">Devices</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"
-                    role="tab" aria-controls="overview" aria-selected="true">System</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="logout-tab" data-bs-toggle="tab" data-bs-target="#logout" type="button"
-                    role="tab" aria-controls="logout" aria-selected="false">Logout</button>
-            </li>
-        </ul>
-
+        <!-- Left Tab Bar -->
+        <div class="left-tabs">
+            <!-- Tab Bar -->
+            <ul class="nav nav-tabs" id="statusTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="administration-tab" data-bs-toggle="tab"
+                        data-bs-target="#administration" type="button" role="tab" aria-controls="administration"
+                        aria-selected="false">Administration</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="status-tab" data-bs-toggle="tab" data-bs-target="#status"
+                        type="button" role="tab" aria-controls="status" aria-selected="false">Status</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="devices-tab" data-bs-toggle="tab" data-bs-target="#devices"
+                        type="button" role="tab" aria-controls="devices" aria-selected="false">Devices</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="system-tab" data-bs-toggle="tab" data-bs-target="#system" type="button"
+                        role="tab" aria-controls="system" aria-selected="true">System</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="logout-tab" data-bs-toggle="tab" data-bs-target="#logout" type="button"
+                        role="tab" aria-controls="logout" aria-selected="false">Logout</button>
+                </li>
+            </ul>
+        </div>
         <h2 class="my-4">Firmware Management</h2>
+        <div class="sub-container">
 
-        <!-- Backup Section -->
-        <div class="section">
-            <h3>Backup Current Firmware</h3>
-            <button class="button download-btn" onclick="downloadBackup()">
-                Download Backup
-            </button>
-            <p>Save a copy of the current firmware configuration</p>
-        </div>
-
-        <!-- Restore Section -->
-        <div class="section">
-            <h3>Restore Configuration</h3>
-            <input type="file" class="file-input" id="restoreFile" accept=".tar.gz,.bin">
-            <button class="button restore-btn" onclick="handleRestore()">
-                Restore Backup
-            </button>
-            <p>Upload a previously saved configuration archive</p>
-            <div id="restoreStatus" class="status-message"></div>
-        </div>
-
-        <!-- Flash Firmware Section -->
-        <div class="section">
-            <h3>Flash New Firmware</h3>
-            <input type="file" class="file-input" id="firmwareFile" accept=".bin,.img">
-            <button class="button flash-btn" onclick="handleFlash()">
-                Flash Image
-            </button>
-            <p>Upload a new firmware image file</p>
-            <div class="progress-bar">
-                <div class="progress" id="flashProgress">0%</div>
+            <!-- Backup Section -->
+            <div class="section">
+                <h3>Backup Current Firmware</h3>
+                <button class="button download-btn" onclick="downloadBackup()">
+                    Download Backup
+                </button>
+                <p>Save a copy of the current firmware configuration</p>
             </div>
-            <div id="flashStatus" class="status-message"></div>
+
+            <!-- Restore Section -->
+            <div class="section">
+                <h3>Restore Configuration</h3>
+                <input type="file" class="file-input" id="restoreFile" accept=".tar.gz,.bin">
+                <button class="button restore-btn" onclick="handleRestore()">
+                    Restore Backup
+                </button>
+                <p>Upload a previously saved configuration archive</p>
+                <div id="restoreStatus" class="status-message"></div>
+            </div>
+
+            <!-- Flash Firmware Section -->
+            <div class="section">
+                <h3>Flash New Firmware</h3>
+                <input type="file" class="file-input" id="firmwareFile" accept=".bin,.img">
+                <button class="button flash-btn" onclick="handleFlash()">
+                    Flash Image
+                </button>
+                <p>Upload a new firmware image file</p>
+                <div class="progress-bar">
+                    <div class="progress" id="flashProgress">0%</div>
+                </div>
+                <div id="flashStatus" class="status-message"></div>
+            </div>
         </div>
     </div>
 
     <script>
+        // Add tab click handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    const targetTab = e.target.getAttribute('data-bs-target');
+                    handleTabClick(targetTab);
+                });
+            });
+
+            // Initialize first tab
+            handleTabClick('#system', true);
+        });
+
+        function handleTabClick(targetTab, init) {
+            console.log(`Switched to tab: ${targetTab}`);
+
+            // Custom actions for each tab
+            switch (targetTab) {
+                case '#administration':
+                    console.log('handling administration...');
+                    break;
+                case '#status':
+                    console.log('handling status...');
+                    break;
+                case '#system':
+                    console.log('handling detailed system info...');
+                    break;
+                case '#devices':
+                    console.log('handling detailed system info...');
+                    break;
+                case '#logout':
+                    console.log('handling logout...');
+                    break;
+            }
+
+            // Active visual feedback
+            const activeTab = document.querySelector(`[data-bs-target="${targetTab}"]`);
+            const tabs = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            activeTab.classList.add('active');
+
+            // Routing )
+            if (!init) {
+                switch (targetTab) {
+                    case '#administration':
+                        window.location = "./change_password_internal.html";
+                        break;
+                    case '#status':
+                        window.location = "./status_mock.html";
+                        break;
+                    case '#system':
+                        window.location = "./firmwares_mock.html";
+                        break;
+                    case '#devices':
+                        window.location = "./devices_mock.html";
+                        break;
+                    case '#logout':
+                        window.location = "./login_mock.html";
+                        break;
+                }
+            }
+        }
         function downloadBackup() {
             // Simulate backup file creation
             const dummyData = new Blob(["Dummy backup content"], { type: 'application/octet-stream' });
@@ -241,4 +332,5 @@
         }
     </script>
 </body>
+
 </html>
